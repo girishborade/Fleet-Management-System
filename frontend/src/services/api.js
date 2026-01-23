@@ -21,6 +21,13 @@ const ApiService = {
         return response.data;
     },
 
+    searchLocations: async (query) => {
+        const response = await axios.get(`${API_BASE}/airport`, {
+            params: { airportCode: query }
+        });
+        return response.data;
+    },
+
     // Car Services
     getAvailableCars: async (hubId, startDate, endDate) => {
         const response = await axios.get(`${API_BASE}/cars/available`, {
@@ -62,6 +69,13 @@ const ApiService = {
 
     returnCar: async (returnRequest) => {
         const response = await axios.post('/booking/return', returnRequest);
+        return response.data;
+    },
+
+    downloadInvoice: async (bookingId) => {
+        const response = await axios.get(`${API_BASE}/invoice/${bookingId}`, {
+            responseType: 'blob' // Important for handling PDF files
+        });
         return response.data;
     },
 

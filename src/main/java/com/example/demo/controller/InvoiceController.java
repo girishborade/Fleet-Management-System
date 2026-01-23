@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.ByteArrayInputStream;
 
 @RestController
-@RequestMapping("/api/invoice")
+@RequestMapping("/api/v1/invoice")
 @CrossOrigin(origins = "http://localhost:3000")
 public class InvoiceController {
 
@@ -21,10 +21,11 @@ public class InvoiceController {
     @GetMapping(value = "/{bookingId}", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<InputStreamResource> downloadInvoice(@PathVariable Long bookingId) {
 
-        ByteArrayInputStream bis = invoiceService.generateInvoicePDF(bookingId);
+        byte[] pdfBytes = invoiceService.generateInvoicePDF(bookingId);
+        ByteArrayInputStream bis = new ByteArrayInputStream(pdfBytes);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Disposition", "inline; filename=invoice_" + bookingId + ".pdf");
+        headers.add("Content-Disposition", "attachment; filename=invoice_" + bookingId + ".pdf");
 
         return ResponseEntity
                 .ok()

@@ -30,6 +30,9 @@ public class BookingService {
         @Autowired
         private InvoiceRepository invoiceRepository;
 
+        @Autowired
+        private InvoiceService invoiceService;
+
         public BookingResponse createBooking(BookingRequest request) {
                 BookingHeaderTable booking = new BookingHeaderTable();
 
@@ -185,6 +188,14 @@ public class BookingService {
                         // Calculate Rates (Simple logic for demo)
                         // invoice.setTotalAmt(...);
                         invoiceRepository.save(invoice);
+                }
+
+                // Send Invoice Email automatically
+                try {
+                        invoiceService.sendInvoiceEmail(booking.getBookingId(), booking.getEmailId());
+                } catch (Exception e) {
+                        System.err.println("Failed to send invoice email: " + e.getMessage());
+                        // Do not fail the return transaction if email fails
                 }
 
                 return mapToResponse(booking);

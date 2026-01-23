@@ -77,27 +77,38 @@ public class UserController {
 		}
 	}
 
-	// @PostMapping(value = "/login")
-	// public ResponseEntity<?> validateUser(@RequestBody User user) {
-	//
-	// try {
-	//
-	// boolean success = userService.validateUser(user);
-	//
-	// if (success) {
-	// return ResponseEntity.ok("Login Succesfull");
-	// } else {
-	// return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid user name
-	// or password");
-	// }
-	//
-	// } catch (Exception e) {
-	//
-	// return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Some Error
-	// Occurred" + e.getMessage());
-	//
-	// }
-	//
-	// }
+	@Autowired
+	private com.example.demo.Service.GoogleAuthService googleAuthService;
+
+	@PostMapping("/api/v1/auth/google")
+	public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> request) {
+		try {
+			String token = request.get("token");
+			String jwt = googleAuthService.verifyGoogleTokenAndGetJwt(token);
+
+			// We need to fetch the user again to get the role/id for the response
+			// Extract username from jwt or just use the logic from normal login if possible
+			// But since we have the JWT, let's decode username from it or have
+			// GoogleAuthService return User object?
+			// BETTER APPROACH: Let's fetch the user based on the username encoded in the
+			// JWT we just got.
+
+			String username = jwtService.extractUserName(jwt);
+			User fullUser = userService.getUserByUsername(username);
+
+			Map<String, Object> response = new HashMap<>();
+			response.put("token", jwt);
+			response.put("role", fullUser.getRole());
+			response.put("userId", fullUser.getId());
+			if (fullUser.getHub() != null) {
+				response.put("hubId", fullUser.getHub().getHubId());
+			}
+
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			logger.error("Google Sign In Error", e);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Google Token");
+		}
+	}
 
 }

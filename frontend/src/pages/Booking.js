@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import ApiService from '../services/api';
 import AuthService from '../services/authService';
 
 const Booking = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [step, setStep] = useState(1);
 
     // Data States
@@ -52,7 +53,38 @@ const Booking = () => {
         loadStates();
         loadAddOns();
         loadCarTypes();
-    }, []);
+
+        // Handle pre-filled data from redirects (New Flow)
+        if (location.state) {
+            // Case: Returning from Car Selection
+            if (location.state.selectedCar) {
+                const { selectedCar, pickupHub, returnHub, startDate, endDate, differentReturnChecked } = location.state;
+                setDates({ startDate, endDate });
+                setSelectedHub(pickupHub.hubId);
+                // Pre-fill hubs to ensure dropdown shows something if list not loaded
+                setHubs([pickupHub]);
+
+                setSelectedCar(selectedCar);
+                setStep(3); // Jump to Add-ons
+
+                // If different return logic needed?
+                // if (differentReturnChecked) ...
+            }
+
+            // Handle pre-filled data from redirects
+            const { selectedCarType, pickupHub } = location.state;
+
+            if (selectedCarType) {
+                setSelectedCarType(selectedCarType.carTypeId);
+            }
+
+            if (pickupHub) {
+                // Pre-fill hub selection
+                setHubs([pickupHub]);
+                setSelectedHub(pickupHub.hubId);
+            }
+        }
+    }, [location.state]);
 
     const loadStates = async () => {
         try {
@@ -111,33 +143,59 @@ const Booking = () => {
         }
     };
 
-    const handleSearchCars = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError('');
-        try {
-            const data = await ApiService.getAvailableCars(selectedHub, dates.startDate, dates.endDate);
-            if (Array.isArray(data) && data.length > 0) {
-                // Filter by car type if selected
-                const filteredCars = selectedCarType
-                    ? data.filter(car => car.carType?.carTypeId === Number(selectedCarType))
-                    : data;
+    const [airportCode, setAirportCode] = useState('');
+    const [differentReturn, setDifferentReturn] = useState(false);
 
-                if (filteredCars.length > 0) {
-                    setCars(filteredCars);
-                    setStep(2);
-                } else {
-                    setError('No cars available specifically for this type (try "All Types").');
+    const handleSearchLocation = async (e) => {
+        e.preventDefault();
+        // This handles "Search" or "Find Airport"
+        // But we have two different actions in the reference.
+        // Let's split them or handle based on input.
+    };
+
+    const searchByAirport = async () => {
+        if (!airportCode) {
+            alert("Enter airport code");
+            return;
+        }
+        setLoading(true);
+        try {
+            const data = await ApiService.searchLocations(airportCode); // Returns Hub list
+            navigate('/select-hub', {
+                state: {
+                    pickupDateTime: dates.startDate,
+                    returnDateTime: dates.endDate,
+                    differentReturn,
+                    locationData: data, // Passing array of hubs
+                    searchType: 'airport'
                 }
-            } else {
-                setError('No cars available for selected dates.');
-            }
+            });
         } catch (err) {
-            setError('Failed to fetch cars. Please try again.');
-            console.error(err);
+            alert('Airport search failed');
         } finally {
             setLoading(false);
         }
+    };
+
+    const searchByCity = (e) => {
+        e.preventDefault();
+        if (!selectedState || (!selectedCity && cities.length > 0)) {
+            alert('Please select state and city');
+            return;
+        }
+
+        navigate('/select-hub', {
+            state: {
+                pickupDateTime: dates.startDate,
+                returnDateTime: dates.endDate,
+                differentReturn,
+                locationData: {
+                    stateName: selectedState.name,
+                    cityName: selectedCity.name
+                },
+                searchType: 'city'
+            }
+        });
     };
 
     const toggleAddOn = (id) => {
@@ -240,54 +298,94 @@ const Booking = () => {
             </div>
 
             {/* Step 1: Location & Date (Unchanged Logic, just re-render) */}
+            {/* Step 1: Location & Date (Refactored to MakeReservation style) */}
             {step === 1 && (
-                <div className="card glass-card p-4">
-                    <form onSubmit={handleSearchCars}>
-                        <div className="row g-3">
-                            <div className="col-md-4">
-                                <label className="form-label">State</label>
-                                <select className="form-select" onChange={handleStateChange} required>
-                                    <option value="">Select State</option>
+                <div className="row g-4">
+                    {/* Left Panel */}
+                    <div className="col-md-6">
+                        <div className="card glass-card p-4 h-100">
+                            <h3>Make Reservation</h3>
+
+                            {/* Dates */}
+                            <div className="row g-3 mb-3">
+                                <div className="col-md-6">
+                                    <label className="form-label">Pick-Up Date</label>
+                                    <input type="date" className="form-control" onChange={e => setDates({ ...dates, startDate: e.target.value })} required />
+                                    {/* Note: User used datetime-local, keeping date for consistency with legacy or switching? keeping date for now */}
+                                </div>
+                                <div className="col-md-6">
+                                    <label className="form-label">Return Date</label>
+                                    <input type="date" className="form-control" onChange={e => setDates({ ...dates, endDate: e.target.value })} required />
+                                </div>
+                            </div>
+
+                            <hr />
+
+                            {/* Airport Section */}
+                            <h5 className="mt-3">Pick-Up Location</h5>
+                            <div className="mb-3">
+                                <label className="form-label fw-bold">Enter Airport Code</label>
+                                <div className="input-group">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={airportCode}
+                                        onChange={e => setAirportCode(e.target.value.toUpperCase())}
+                                        placeholder="e.g. BOM"
+                                    />
+                                    <button className="btn btn-outline-primary" type="button" onClick={searchByAirport} disabled={loading}>
+                                        {loading ? '...' : 'Find Airport'}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="text-center fw-bold my-2">OR</div>
+
+                            {/* City Section */}
+                            <div className="mb-3">
+                                <label className="form-label fw-bold">Enter State</label>
+                                <select className="form-select" onChange={handleStateChange}>
+                                    <option value="">--Select State--</option>
                                     {states.map(s => <option key={s.stateId} value={s.stateId}>{s.stateName}</option>)}
                                 </select>
                             </div>
-                            <div className="col-md-4">
-                                <label className="form-label">City</label>
-                                <select className="form-select" onChange={handleCityChange} disabled={!selectedCity && cities.length === 0} required>
-                                    <option value="">Select City</option>
+                            <div className="mb-3">
+                                <label className="form-label fw-bold">City</label>
+                                <select className="form-select" onChange={handleCityChange} disabled={!selectedCity && cities.length === 0}>
+                                    <option value="">--Select City--</option>
                                     {cities.map(c => <option key={c.cityId} value={c.cityId}>{c.cityName}</option>)}
                                 </select>
                             </div>
-                            <div className="col-md-4">
-                                <label className="form-label">Hub</label>
-                                <select className="form-select" onChange={(e) => setSelectedHub(e.target.value)} disabled={!hubs.length} required>
-                                    <option value="">Select Hub</option>
-                                    {hubs.map(h => <option key={h.hubId} value={h.hubId}>{h.hubName}</option>)}
-                                </select>
+
+                            {/* Return Checkbox */}
+                            <div className="form-check mb-4">
+                                <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    checked={differentReturn}
+                                    onChange={() => setDifferentReturn(!differentReturn)}
+                                />
+                                <label className="form-check-label">
+                                    I may return the car to different location
+                                </label>
                             </div>
-                            <div className="col-md-4">
-                                <label className="form-label">Car Type</label>
-                                <select className="form-select" onChange={(e) => setSelectedCarType(e.target.value)}>
-                                    <option value="">All Types</option>
-                                    {carTypes.map(t => <option key={t.carTypeId} value={t.carTypeId}>{t.carTypeName}</option>)}
-                                </select>
-                            </div>
-                            <div className="col-md-4">
-                                <label className="form-label">Start Date</label>
-                                <input type="date" className="form-control" onChange={e => setDates({ ...dates, startDate: e.target.value })} required />
-                            </div>
-                            <div className="col-md-4">
-                                <label className="form-label">End Date</label>
-                                <input type="date" className="form-control" onChange={e => setDates({ ...dates, endDate: e.target.value })} required />
-                            </div>
-                        </div>
-                        <div className="mt-4 text-end">
-                            <button type="submit" className="btn btn-primary px-4" disabled={loading}>
-                                {loading ? 'Searching...' : 'Find Cars'}
+
+                            <button className="btn btn-primary w-100 py-2 fs-5" onClick={searchByCity}>
+                                Continue Booking
                             </button>
                         </div>
-                        {error && <div className="alert alert-danger mt-3">{error}</div>}
-                    </form>
+                    </div>
+
+                    {/* Right Panel */}
+                    <div className="col-md-6">
+                        <div className="card h-100 p-4 bg-light border-0 d-flex align-items-center justify-content-center text-center">
+                            <div>
+                                <h4 className="fw-bold mb-3">Special Offers</h4>
+                                <p className="text-muted">For sale Ads / Promotions</p>
+                                <i className="bi bi-tag-fill text-warning display-1"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             )}
 
