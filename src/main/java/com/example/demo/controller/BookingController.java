@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequestMapping("/booking")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class BookingController {
 
     @Autowired

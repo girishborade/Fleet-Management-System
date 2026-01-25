@@ -21,7 +21,7 @@ public class FleeManApplication {
 		SpringApplication.run(FleeManApplication.class, args);
 	}
 
-	@Bean
+	@Bean	
 	public BCryptPasswordEncoder encoder()
 	{
 		return new BCryptPasswordEncoder();
@@ -32,6 +32,4 @@ public class FleeManApplication {
 	{
 		return new RestTemplate();
 	}
-
-	
 }

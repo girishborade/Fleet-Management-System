@@ -10,7 +10,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin")
-@CrossOrigin(origins = "http://localhost:3000") // Adjust for frontend port
+@CrossOrigin(origins = "http://localhost:5173") // Adjust for frontend port
 public class AdminController {
 
     @Autowired

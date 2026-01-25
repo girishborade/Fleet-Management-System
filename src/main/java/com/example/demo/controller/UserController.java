@@ -22,7 +22,7 @@ import com.example.demo.Service.JwtService;
 import com.example.demo.Service.UserService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
 	@Autowired

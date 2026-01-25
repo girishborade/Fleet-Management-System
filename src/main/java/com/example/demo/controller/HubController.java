@@ -24,7 +24,7 @@ import java.util.Map;
 @Slf4j
 // @RequiredArgsConstructor
 @RequestMapping("api/v1")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class HubController {
 
     @Autowired

@@ -13,7 +13,7 @@ import com.example.demo.Entity.StateMaster;
 import com.example.demo.Service.StateServiceImpl;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class StateController {
 
 	@Autowired

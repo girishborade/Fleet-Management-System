@@ -12,7 +12,7 @@ import com.example.demo.Entity.CityMaster;
 import com.example.demo.Service.CityService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class CityController {
 	
 	@Autowired

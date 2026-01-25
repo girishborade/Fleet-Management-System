@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 //@RequestMapping("ap1/v1")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class CustomerExistsController {
     @Autowired
     private CheckCustomerExistsService checkCustomerExistsService;

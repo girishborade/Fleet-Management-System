@@ -17,7 +17,7 @@ import com.example.demo.Service.CustomerService;
 import com.example.demo.dto.ApiResponse;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class CustomerController {
 
     @Autowired
