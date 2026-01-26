@@ -20,16 +20,15 @@ public class GetCarDetailsFromBookingController {
     private GetDetailsOfCarFromBookingService getDetailsOfCarFromBookingService;
 
     @PostMapping("/getCarByBookingDetails")
-            public List<ReturnCarMasterDetailsFromBooking> getCarDetailsByBookingController(@RequestBody  BookingDTO bookingDTO) {
+    public List<ReturnCarMasterDetailsFromBooking> getCarDetailsByBookingController(
+            @RequestBody BookingDTO bookingDTO) {
 
         String bookcar = bookingDTO.getBookcar();
 
-         List<ReturnCarMasterDetailsFromBooking> showData = getDetailsOfCarFromBookingService.serviceOfGetCarDetailsFromBooking(bookingDTO);
-         System.out.println("Message Show Data" +showData);
+        List<ReturnCarMasterDetailsFromBooking> showData = getDetailsOfCarFromBookingService
+                .serviceOfGetCarDetailsFromBooking(bookingDTO);
+        System.out.println("Message Show Data" + showData);
         return showData;
 
-
-
-
-            }
+    }
 }

@@ -18,14 +18,12 @@ public class StateController {
 
 	@Autowired
 	private StateServiceImpl serviceImpl;
-	
+
 	@GetMapping(value = "/State")
-	public   ResponseEntity<List<StateMaster>>  State() 
-	{
+	public ResponseEntity<List<StateMaster>> State() {
 
 		List<StateMaster> list = serviceImpl.getAllStateMaster();
-		if(list == null)
-		{
+		if (list == null) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(list);

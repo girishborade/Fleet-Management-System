@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-//@RequestMapping("ap1/v1")
+// @RequestMapping("ap1/v1")
 @CrossOrigin(origins = "http://localhost:5173")
 public class CustomerExistsController {
     @Autowired
@@ -26,12 +26,10 @@ public class CustomerExistsController {
 
         String result = checkCustomerExistsService.createBooking(bookingDTO);
 
-        if(result.equals("You can continue with booking"))
-        {
+        if (result.equals("You can continue with booking")) {
 
             return new ResponseEntity<>(result, HttpStatus.OK);
-        }
-         else {
+        } else {
 
             return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
         }

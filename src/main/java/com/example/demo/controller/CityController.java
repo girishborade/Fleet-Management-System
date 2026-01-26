@@ -14,8 +14,8 @@ import com.example.demo.Service.CityService;
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
 public class CityController {
-	
-	@Autowired
+
+    @Autowired
     private CityService cityService;
 
     @GetMapping("/city/{stateId}")
