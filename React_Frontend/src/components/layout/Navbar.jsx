@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import AuthService from '../services/authService';
+import AuthService from '../../services/authService';
 
 const Navbar = ({ theme, toggleTheme }) => {
     const navigate = useNavigate();

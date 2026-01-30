@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ApiService from '../services/api';
+import ApiService from '../../services/api';
 
 const StaffBookingWizard = ({ onClose }) => {
     const [step, setStep] = useState(1);

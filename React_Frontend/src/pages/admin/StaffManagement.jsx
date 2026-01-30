@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ApiService from '../services/api';
+import ApiService from '../../services/api';
 
 const StaffManagement = () => {
     const navigate = useNavigate();

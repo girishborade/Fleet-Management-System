@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import ApiService from '../services/api';
+import ApiService from '../../services/api';
 
 const HubSelection = () => {
     const location = useLocation();

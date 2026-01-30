@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import ApiService from '../services/api';
-import StaffBookingWizard from '../components/StaffBookingWizard';
+import ApiService from '../../services/api';
+import StaffBookingWizard from '../../components/staff/StaffBookingWizard';
 
 const StaffDashboard = () => {
     const [activeTab, setActiveTab] = useState('handover');

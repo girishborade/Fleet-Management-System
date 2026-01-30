@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import ApiService from '../services/api';
-import AuthService from '../services/authService';
+import ApiService from '../../services/api';
+import AuthService from '../../services/authService';
 
 const ManageBooking = () => {
     const location = useLocation();
