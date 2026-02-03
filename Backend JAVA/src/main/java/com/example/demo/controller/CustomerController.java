@@ -68,6 +68,7 @@ public class CustomerController {
 
     @PostMapping("/customer/save-or-update")
     public ResponseEntity<ApiResponse> saveOrUpdateCustomer(@RequestBody CustomerMaster customer) {
+        System.out.println("Received Customer Update: " + customer);
         if (customer.getEmail() == null || customer.getEmail().isEmpty()) {
             return ResponseEntity.badRequest().body(new ApiResponse("Email is required", false, null));
         }

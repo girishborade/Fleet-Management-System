@@ -36,6 +36,8 @@ public class CustomerMaster {
 
 	private String city;
 
+	private String state;
+
 	private String pincode;
 
 	private String phoneNumber;
@@ -243,4 +245,3 @@ public class CustomerMaster {
 	}
 
 }
-

@@ -22,4 +22,15 @@ public class BookingResponse {
     private Double totalAmount; // Optional, if calculated
     private Double totalAddonAmount;
     private java.util.List<String> selectedAddOns;
+
+    // Customer Details for Handover
+    private String address;
+    private String city;
+    private String state;
+    private String pincode;
+    private String phoneNumber;
+    private String mobileNumber;
+    private String drivingLicenseNumber;
+    private LocalDate dateOfBirth;
+    private String passportNumber;
 }

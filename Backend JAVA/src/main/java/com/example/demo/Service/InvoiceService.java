@@ -172,8 +172,7 @@ public class InvoiceService {
             long days = 1;
             if (booking.getStartDate() != null && endDate != null) {
                 days = java.time.temporal.ChronoUnit.DAYS.between(booking.getStartDate(), endDate);
-                if (days <= 0)
-                    days = 1;
+                days = days + 1; // Inclusive of start and end date (e.g., Same day = 1, Next day = 2)
             }
 
             double dailyRate = booking.getDailyRate() != null ? booking.getDailyRate() : 0.0;

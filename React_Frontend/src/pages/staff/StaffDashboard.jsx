@@ -275,24 +275,85 @@ const StaffDashboard = () => {
                                 <div className="space-y-8 animate-in fade-in duration-300">
                                     {/* Booking Details Box - Consistent with original 2x2 layout */}
                                     <div className="p-6 bg-muted rounded-2xl border border-border/50">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div>
-                                                <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-1">Confirmation</p>
-                                                <p className="font-bold text-sm"># {bookingDetails?.confirmationNumber}</p>
+                                                <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-1.5">Confirmation</p>
+                                                <p className="font-black text-lg"># {bookingDetails?.confirmationNumber}</p>
                                             </div>
                                             <div>
-                                                <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-1">Dates</p>
-                                                <p className="font-bold text-sm">{bookingDetails?.startDate} — {bookingDetails?.endDate}</p>
+                                                <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-1.5">Handover Effective Dates</p>
+                                                <div className="flex items-center gap-2">
+                                                    <Badge className="bg-emerald-600 hover:bg-emerald-600 font-bold">START: TODAY</Badge>
+                                                    <ArrowRight className="h-3 w-3 text-muted-foreground" />
+                                                    <span className="font-bold text-sm text-muted-foreground">TILL: {bookingDetails?.endDate}</span>
+                                                </div>
+                                                <p className="text-[10px] font-bold text-muted-foreground mt-1">
+                                                    Original: {bookingDetails?.startDate} — {bookingDetails?.endDate}
+                                                </p>
                                             </div>
                                             <div>
-                                                <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-1">Customer</p>
+                                                <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-1.5">Customer</p>
                                                 <p className="font-bold text-sm capitalize">{bookingDetails?.customerName}</p>
                                             </div>
                                             <div>
-                                                <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-1">Vehicle</p>
-                                                <p className={`font-bold text-sm ${!selectedCar && activeTab === 'handover' ? 'text-destructive' : ''}`}>
-                                                    {selectedCar ? selectedCar.carName : (activeTab === 'handover' ? 'Selection Required' : bookingDetails?.carName)}
-                                                </p>
+                                                <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-1.5">Assigned Vehicle</p>
+                                                <div className={`font-bold text-sm flex items-center gap-2 ${!selectedCar && activeTab === 'handover' ? 'text-destructive' : 'text-primary'}`}>
+                                                    {selectedCar ? (
+                                                        <>
+                                                            <Car className="h-4 w-4" />
+                                                            {selectedCar.carName}
+                                                        </>
+                                                    ) : (
+                                                        activeTab === 'handover' ? (
+                                                            <Badge variant="destructive" className="animate-pulse font-bold">SELECTION REQUIRED</Badge>
+                                                        ) : bookingDetails?.carName
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Customer Detailed Info - Added for Handover */}
+                                    <div className="p-6 bg-muted/50 rounded-2xl border border-border/50">
+                                        <div className="flex justify-between items-center mb-4">
+                                            <h5 className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Customer Information</h5>
+                                            <Badge variant="outline" className="text-[10px] uppercase font-bold tracking-widest">
+                                                {bookingDetails?.dateOfBirth ? `DOB: ${bookingDetails.dateOfBirth}` : 'DOB: N/A'}
+                                            </Badge>
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                            <div className="col-span-1 md:col-span-2">
+                                                <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-1">Full Address</p>
+                                                <div className="font-bold text-sm break-words">
+                                                    {bookingDetails?.address || bookingDetails?.city || bookingDetails?.state || bookingDetails?.pincode ? (
+                                                        <>
+                                                            {bookingDetails?.address && <span>{bookingDetails.address}, </span>}
+                                                            {bookingDetails?.city && <span>{bookingDetails.city}</span>}
+                                                            {bookingDetails?.state && <span>, {bookingDetails.state}</span>}
+                                                            {bookingDetails?.pincode && <span> - {bookingDetails.pincode}</span>}
+                                                        </>
+                                                    ) : (
+                                                        <span className="text-muted-foreground italic">Address Details Not Available</span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-1">Contact</p>
+                                                <p className="font-bold text-sm tracking-tight">{bookingDetails?.mobileNumber || bookingDetails?.phoneNumber || 'N/A'}</p>
+                                                <p className="text-xs text-muted-foreground truncate" title={bookingDetails?.email}>{bookingDetails?.email}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-1">ID Proofs</p>
+                                                <div className="space-y-1">
+                                                    <div className="flex justify-between items-center bg-background/50 px-2 py-1 rounded">
+                                                        <span className="text-[9px] font-bold text-muted-foreground uppercase">DL</span>
+                                                        <span className="font-bold text-xs font-mono">{bookingDetails?.drivingLicenseNumber || 'N/A'}</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center bg-background/50 px-2 py-1 rounded">
+                                                        <span className="text-[9px] font-bold text-muted-foreground uppercase">PPT</span>
+                                                        <span className="font-bold text-xs font-mono">{bookingDetails?.passportNumber || 'N/A'}</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

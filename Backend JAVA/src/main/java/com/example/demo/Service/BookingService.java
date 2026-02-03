@@ -75,8 +75,7 @@ public class BookingService {
 
                 // Fix for missing Address details
                 booking.setPin(customer.getPincode());
-                booking.setState(customer.getCity()); // Assuming Customer City as proxy for State if State not in
-                                                      // Customer, or leave blank if strictly State
+                booking.setState(customer.getState());
 
                 booking.setEmailId(request.getEmail());
                 booking.setBookcar(car.getCarName());
@@ -162,6 +161,11 @@ public class BookingService {
                 if (request.getNotes() != null)
                         booking.setPickupCondition(request.getNotes());
 
+                // Update Dates as per new requirement
+                booking.setStartDate(LocalDate.now());
+                // booking.setEndDate(null); // Reverted as per user request to keep original
+                // end date
+
                 // Update Booking Status
                 booking.setBookingStatus("ACTIVE");
                 bookingRepository.save(booking);
@@ -195,6 +199,9 @@ public class BookingService {
                 if (request.getNotes() != null)
                         booking.setReturnCondition(request.getNotes());
 
+                // Set actual return date as End Date
+                booking.setEndDate(LocalDate.now());
+
                 bookingRepository.save(booking);
 
                 // Update Car Availability
@@ -213,8 +220,7 @@ public class BookingService {
                         if (booking.getStartDate() != null && invoice.getReturnDate() != null) {
                                 days = java.time.temporal.ChronoUnit.DAYS.between(booking.getStartDate(),
                                                 invoice.getReturnDate());
-                                if (days <= 0)
-                                        days = 1;
+                                days = days + 1; // Inclusive of both start and end date
                         }
 
                         double dailyRate = booking.getDailyRate() != null ? booking.getDailyRate() : 0.0;
@@ -260,6 +266,26 @@ public class BookingService {
                 response.setBookingStatus(booking.getBookingStatus());
                 response.setCustomerName(booking.getFirstName() + " " + booking.getLastName());
                 response.setEmail(booking.getEmailId());
+
+                // Map additional customer details for Handover
+                if (booking.getCustomer() != null) {
+                        // Force fresh fetch to ensure all fields are loaded
+                        CustomerMaster c = customerRepository.findById(booking.getCustomer().getCustId())
+                                        .orElse(booking.getCustomer());
+
+                        response.setAddress(c.getAddressLine1()
+                                        + (c.getAddressLine2() != null ? ", " + c.getAddressLine2() : ""));
+                        response.setCity(c.getCity());
+                        response.setState(booking.getState()); // Booking has state, can also use customer.getCity/State
+                                                               // logic if needed
+                        response.setPincode(c.getPincode());
+                        response.setPhoneNumber(c.getPhoneNumber());
+                        response.setMobileNumber(c.getMobileNumber());
+                        response.setDrivingLicenseNumber(c.getDrivingLicenseNumber());
+                        response.setDateOfBirth(c.getDateOfBirth());
+                        response.setPassportNumber(c.getPassportNumber());
+                }
+
                 response.setCarName(booking.getBookcar());
 
                 if (booking.getCar() != null) {

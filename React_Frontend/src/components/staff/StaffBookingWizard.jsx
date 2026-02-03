@@ -72,9 +72,9 @@ const StaffBookingWizard = ({ onClose }) => {
     const [customerDetails, setCustomerDetails] = useState(null);
     const [isNewCustomer, setIsNewCustomer] = useState(false);
     const [newCustomerData, setNewCustomerData] = useState({
-        firstName: '', lastName: '', address: '', state: '', city: '',
+        firstName: '', lastName: '', addressLine1: '', state: '', city: '', pincode: '',
         email: '', mobileNumber: '', creditCardType: 'VISA', creditCardNumber: '',
-        drivingLicenseNumber: '', idPassportNumber: ''
+        drivingLicenseNumber: '', passportNumber: '', dateOfBirth: ''
     });
 
     const handleFindCars = async () => {
@@ -216,8 +216,8 @@ const StaffBookingWizard = ({ onClose }) => {
                                     key={car.carId}
                                     onClick={() => setSelectedCar(car)}
                                     className={`p-5 rounded-2xl border-2 transition-all cursor-pointer flex justify-between items-center group ${selectedCar?.carId === car.carId
-                                            ? 'border-primary bg-primary/5 shadow-lg shadow-primary/10'
-                                            : 'border-border/50 bg-muted/20 hover:border-primary/30'
+                                        ? 'border-primary bg-primary/5 shadow-lg shadow-primary/10'
+                                        : 'border-border/50 bg-muted/20 hover:border-primary/30'
                                         }`}
                                 >
                                     <div className="flex items-center gap-4">
@@ -332,23 +332,49 @@ const StaffBookingWizard = ({ onClose }) => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
                                             <Label className="text-[10px] font-black uppercase text-muted-foreground">First Name</Label>
-                                            <Input placeholder="First Name" className="h-12 border-none bg-background/50 font-bold" onChange={e => setNewCustomerData({ ...newCustomerData, firstName: e.target.value })} />
+                                            <Input placeholder="First Name" className="h-12 border-none bg-background/50 font-bold" value={newCustomerData.firstName} onChange={e => setNewCustomerData({ ...newCustomerData, firstName: e.target.value })} />
                                         </div>
                                         <div className="space-y-2">
                                             <Label className="text-[10px] font-black uppercase text-muted-foreground">Last Name</Label>
-                                            <Input placeholder="Last Name" className="h-12 border-none bg-background/50 font-bold" onChange={e => setNewCustomerData({ ...newCustomerData, lastName: e.target.value })} />
+                                            <Input placeholder="Last Name" className="h-12 border-none bg-background/50 font-bold" value={newCustomerData.lastName} onChange={e => setNewCustomerData({ ...newCustomerData, lastName: e.target.value })} />
                                         </div>
+
+                                        <div className="space-y-2">
+                                            <Label className="text-[10px] font-black uppercase text-muted-foreground">Contact Number</Label>
+                                            <Input placeholder="Mobile Number" className="h-12 border-none bg-background/50 font-bold" value={newCustomerData.mobileNumber} onChange={e => setNewCustomerData({ ...newCustomerData, mobileNumber: e.target.value })} />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label className="text-[10px] font-black uppercase text-muted-foreground">Date of Birth</Label>
+                                            <Input type="date" className="h-12 border-none bg-background/50 font-bold" value={newCustomerData.dateOfBirth} onChange={e => setNewCustomerData({ ...newCustomerData, dateOfBirth: e.target.value })} />
+                                        </div>
+
                                         <div className="md:col-span-2 space-y-2">
-                                            <Label className="text-[10px] font-black uppercase text-muted-foreground">Address</Label>
-                                            <Input placeholder="Current Address" className="h-12 border-none bg-background/50 font-bold" onChange={e => setNewCustomerData({ ...newCustomerData, address: e.target.value })} />
+                                            <Label className="text-[10px] font-black uppercase text-muted-foreground">Address Line 1</Label>
+                                            <Input placeholder="House No, Building, Street" className="h-12 border-none bg-background/50 font-bold" value={newCustomerData.addressLine1} onChange={e => setNewCustomerData({ ...newCustomerData, addressLine1: e.target.value })} />
                                         </div>
+
+                                        <div className="grid grid-cols-3 gap-4 md:col-span-2">
+                                            <div className="space-y-2">
+                                                <Label className="text-[10px] font-black uppercase text-muted-foreground">City</Label>
+                                                <Input placeholder="City" className="h-12 border-none bg-background/50 font-bold" value={newCustomerData.city} onChange={e => setNewCustomerData({ ...newCustomerData, city: e.target.value })} />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label className="text-[10px] font-black uppercase text-muted-foreground">State</Label>
+                                                <Input placeholder="State" className="h-12 border-none bg-background/50 font-bold" value={newCustomerData.state} onChange={e => setNewCustomerData({ ...newCustomerData, state: e.target.value })} />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label className="text-[10px] font-black uppercase text-muted-foreground">Pincode</Label>
+                                                <Input placeholder="Zip Code" className="h-12 border-none bg-background/50 font-bold" value={newCustomerData.pincode || ''} onChange={e => setNewCustomerData({ ...newCustomerData, pincode: e.target.value })} />
+                                            </div>
+                                        </div>
+
                                         <div className="space-y-2">
                                             <Label className="text-[10px] font-black uppercase text-muted-foreground">DL Number</Label>
-                                            <Input placeholder="Driving License #" className="h-12 border-none bg-background/50 font-bold" onChange={e => setNewCustomerData({ ...newCustomerData, drivingLicenseNumber: e.target.value })} />
+                                            <Input placeholder="Driving License #" className="h-12 border-none bg-background/50 font-bold" value={newCustomerData.drivingLicenseNumber} onChange={e => setNewCustomerData({ ...newCustomerData, drivingLicenseNumber: e.target.value })} />
                                         </div>
                                         <div className="space-y-2">
-                                            <Label className="text-[10px] font-black uppercase text-muted-foreground">Mobile Number</Label>
-                                            <Input placeholder="Phone Number" className="h-12 border-none bg-background/50 font-bold" onChange={e => setNewCustomerData({ ...newCustomerData, mobileNumber: e.target.value })} />
+                                            <Label className="text-[10px] font-black uppercase text-muted-foreground">Passport Number</Label>
+                                            <Input placeholder="Passport #" className="h-12 border-none bg-background/50 font-bold" value={newCustomerData.passportNumber} onChange={e => setNewCustomerData({ ...newCustomerData, passportNumber: e.target.value })} />
                                         </div>
                                     </div>
                                     <ShieldCheck className="absolute -right-8 -bottom-8 h-48 w-48 text-primary/5 pointer-events-none" />
