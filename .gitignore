@@ -1,10 +1,80 @@
-# Backend
-target/
-bin/
-
-# Frontend
-node_modules/
-build/
-
-# IDE
+# General
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
 .vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Node / React
+node_modules/
+dist/
+build/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# .NET
+[Bb]in/
+[Oo]bj/
+*.user
+*.userprefs
+*.launchSettings.json
+# Be careful with launchSettings.json, often ignored for secrets but sometimes kept for team config.
+# Given it's a student/demo project, maybe keep launchSettings unless it has secrets? 
+# Usually it has environment variables. I will ignore it to be safe, or just ignore secrets.json.
+# Standard .NET ignore usually ignores launchSettings.json if it contains secrets.
+# For now, I'll ignore bin and obj which are the most important.
+!**/Properties/launchSettings.json 
+# Keeping launchSettings for now as it's often needed for running the project easily.
+
+# Java / Spring Boot
+target/
+*.class
+.mvn/
+mvnw
+mvnw.cmd
+.settings/
+.classpath
+.project
+*.iml
+
+# Visual Studio
+.vs/
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+*.lib
+*.sbr
+*.obj
+*.pch
+*.pdb
+*.ipch
+*.pgc
+*.pgd
+
+# Rider
+.idea/
+
+# Images / Uploads (Optional - if you have user uploads)
+# public/uploads/
