@@ -1,0 +1,74 @@
+services:
+  database:
+    image: mysql:8.0
+    container_name: fleet-db
+    profiles: [ "java", "dotnet", "all" ]
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: testfleet
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ../Database/testfleet.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - fleet-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+
+  backend-java:
+    build:
+      context: ..
+      dockerfile: docker/backend-java/Dockerfile
+    container_name: fleet-java-backend
+    profiles: [ "java", "all" ]
+    ports:
+      - "5087:8080"
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://fleet-db:3306/testfleet
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    networks:
+      - fleet-network
+
+  backend-net:
+    build:
+      context: ..
+      dockerfile: docker/backend-net/Dockerfile
+    container_name: fleet-net-backend
+    profiles: [ "dotnet", "all" ]
+    ports:
+      - "5086:8080"
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__DefaultConnection: "server=fleet-db;port=3306;database=testfleet;user=root;password=root;"
+    networks:
+      - fleet-network
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/frontend/Dockerfile
+    container_name: fleet-frontend
+    profiles: [ "java", "dotnet", "all" ]
+    ports:
+      - "3000:80"
+    depends_on:
+      - database
+    networks:
+      - fleet-network
+
+volumes:
+  db_data:
+
+
+networks:
+  fleet-network:
+    driver: bridge
